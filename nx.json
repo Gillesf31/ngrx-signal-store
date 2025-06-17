@@ -59,6 +59,9 @@
       "linter": "eslint",
       "style": "css",
       "unitTestRunner": "vitest"
+    },
+    "@nx/angular:component": {
+      "style": "none"
     }
   },
   "defaultProject": "ngrx-signal-store"

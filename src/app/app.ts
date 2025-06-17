@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import Todo from './todo/todo';
 
 @Component({
-  imports: [RouterModule],
+  imports: [RouterModule, Todo],
   selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  template: `
+    <h1>App works!</h1>
+    <app-todo />
+    <router-outlet></router-outlet>
+  `,
 })
-export class App {
-  protected title = 'ngrx-signal-store';
-}
+export class App {}
