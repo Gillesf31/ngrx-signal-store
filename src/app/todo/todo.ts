@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TodoService } from './todo-service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { TodoService, TodoType } from './todo-service';
 import { TodoStore } from './todo-store';
-
-export type TodoType = {
-  readonly id: number;
-  readonly title: string;
-  readonly completed: boolean;
-  readonly userId: number;
-};
 
 @Component({
   selector: 'app-todo',
@@ -46,8 +44,12 @@ export type TodoType = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TodoStore, TodoService],
 })
-export default class Todo {
+export default class Todo implements OnInit {
   readonly store = inject(TodoStore);
+
+  public ngOnInit() {
+    this.store.loadTodos();
+  }
 
   protected addTodo() {
     this.store.addTodo({

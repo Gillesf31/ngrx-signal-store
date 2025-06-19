@@ -1,4 +1,5 @@
-import { computed } from '@angular/core';
+import { computed, inject } from '@angular/core';
+import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
   signalStore,
@@ -6,16 +7,18 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import { TodoType } from './todo';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { delay, pipe, switchMap, tap } from 'rxjs';
+import { TodoService, TodoType } from './todo-service';
 
 type TodoStateType = {
   todos: TodoType[];
-  isLoading: boolean;
+  isLoading: boolean | null;
 };
 
 const initialState: TodoStateType = {
   todos: [],
-  isLoading: false,
+  isLoading: null,
 };
 
 export const TodoStore = signalStore(
@@ -32,6 +35,20 @@ export const TodoStore = signalStore(
   })),
   withComputed(({ completedTodos }) => ({
     completedTodosCount: computed(() => completedTodos().length),
+  })),
+  withMethods((store, todoService = inject(TodoService)) => ({
+    loadTodos: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, () => ({ isLoading: true }))),
+        switchMap(() => todoService.getTodos()),
+        // NOTE: Simulate delay
+        delay(1000),
+        tapResponse<TodoType[]>({
+          next: (todos) => patchState(store, { todos, isLoading: false }),
+          error: () => patchState(store, { isLoading: false }),
+        })
+      )
+    ),
   })),
   withMethods((store) => ({
     addTodo(todo: TodoType) {
