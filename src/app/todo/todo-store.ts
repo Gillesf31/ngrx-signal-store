@@ -4,6 +4,7 @@ import {
   patchState,
   signalStore,
   withComputed,
+  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -49,8 +50,6 @@ export const TodoStore = signalStore(
         })
       )
     ),
-  })),
-  withMethods((store) => ({
     addTodo(todo: TodoType) {
       patchState(store, (state) => ({ todos: [...state.todos, todo] }));
     },
@@ -68,6 +67,11 @@ export const TodoStore = signalStore(
     },
     clearTodos() {
       patchState(store, () => ({ todos: [] }));
+    },
+  })),
+  withHooks((store) => ({
+    onInit: () => {
+      store.loadTodos();
     },
   }))
 );

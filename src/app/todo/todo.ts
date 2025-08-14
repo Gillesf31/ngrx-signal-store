@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TodoService, TodoType } from './todo-service';
 import { TodoStore } from './todo-store';
 
@@ -44,12 +39,8 @@ import { TodoStore } from './todo-store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TodoStore, TodoService],
 })
-export default class Todo implements OnInit {
+export default class Todo {
   readonly store = inject(TodoStore);
-
-  public ngOnInit() {
-    this.store.loadTodos();
-  }
 
   protected addTodo() {
     this.store.addTodo({
